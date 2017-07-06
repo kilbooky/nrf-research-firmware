@@ -31,6 +31,12 @@ common.radio.set_channel(common.channels[0])
 common.radio.enter_tone_test_mode()
 
 # Run indefinitely
-while True:
-  pass
+#while True:
+#  pass
 
+try:
+    raw_input('Generating tone on channel %s. Press [enter] to stop: ' % common.channels[0])
+except EOFError:
+    pass
+    
+#

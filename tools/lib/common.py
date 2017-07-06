@@ -17,12 +17,14 @@
 
 
 import logging, argparse
+import nrf24_reset          # <-----akil here so I can reset the dongles 
 from nrf24 import *
 
 channels = []
 args = None
 parser = None
 radio = None
+reset = None
 
 # Initialize the argument parser
 def init_args(description):
@@ -34,6 +36,7 @@ def init_args(description):
   parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output', default=False)
   parser.add_argument('-l', '--lna', action='store_true', help='Enable the LNA (for CrazyRadio PA dongles)', default=False)
   parser.add_argument('-i', '--index', type=int, help='Dongle index', default=0)
+  parser.add_argument('--reset', action='store_true', help='Reset the dongle(s)', default=False)
 
 # Parse and process common comand line arguments
 def parse_and_init():
@@ -42,6 +45,7 @@ def parse_and_init():
   global args
   global channels
   global radio
+  global reset
 
   # Parse the command line arguments
   args = parser.parse_args()
@@ -52,9 +56,16 @@ def parse_and_init():
 
   # Set the channels
   channels = args.channels
-  logging.debug('Using channels {0}'.format(', '.join(str(c) for c in channels)))
-
+  logging.debug('Using channels {0}'.format(', '.join(str(c) for c in channels) ))
   # Initialize the radio
   radio = nrf24(args.index)
-  if args.lna: radio.enable_lna()
+  
+  if args.lna: 
+    radio.enable_lna()
 
+  if args.reset:
+    nrf24_reset.reset_radio(0)
+    logging.debug('Resetting PARadio USB dongle')
+
+
+    
